@@ -31,13 +31,16 @@ const deleteUrl = (urlID) => {
 app.post('/urls', (req, res) => {
   //Generate 6 char string for short URL
   const newShortUrl = generateRandomString();
+  const longURL = req.body.longURL;
+
   //Check to see if the url contains http if not add http://
   if (!req.body.longURL.startsWith('http')) {
-    urlDatabase[newShortUrl] = 'http://' + req.body.longURL;
-  } else {
-    urlDatabase[newShortUrl] = req.body.longURL;
-  }
-  res.redirect(301, `/urls/${newShortUrl}`);
+    res.redirect('urls/new');
+    return
+  };
+
+  urlDatabase[newShortUrl] = longURL;
+  res.redirect(`/urls/${newShortUrl}`);
 });
 
 //Route to delete an object from the database
@@ -63,7 +66,8 @@ app.get('/urls/new', (req, res) => {
 //Route to go to a URL by ID
 app.get('/urls/:shortURL', (req, res) => {
   const shortURL = req.params.shortURL;
-  const templateVars = { shortURL, longURL: urlDatabase[shortURL] };
+  const longURL = urlDatabase[shortURL];
+  const templateVars = { shortURL, longURL };
   res.render('urls_show', templateVars);
 });
 
