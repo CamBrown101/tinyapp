@@ -17,10 +17,15 @@ const urlDatabase = {
   '9sm5xK': 'http://www.google.com'
 };
 
-
+//Generates random 6 char string
 const generateRandomString = () => {
   return Math.random().toString(36).slice(2, 8);
 };
+//Deletes a URL
+const deleteUrl = (urlID) => {
+  delete urlDatabase[urlID]
+};
+
 //Post requests
 //Requst from the form submitting link to be shortends
 app.post('/urls', (req, res) => {
@@ -33,6 +38,14 @@ app.post('/urls', (req, res) => {
     urlDatabase[newShortUrl] = req.body.longURL;
   }
   res.redirect(301, `/urls/${newShortUrl}`);
+});
+
+//Route to delete an object from the database
+app.post('/urls/:shortURL/delete', (req, res) => {
+  // deleteUrl(shortURL)
+  deleteUrl(req.params.shortURL)
+  console.log(urlDatabase)
+  res.redirect('/urls');
 });
 
 //Get requests
