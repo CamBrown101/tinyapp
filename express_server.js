@@ -21,11 +21,17 @@ const urlDatabase = {
 const generateRandomString = () => {
   return Math.random().toString(36).slice(2, 8)
 };
-
+//Post requests
 app.post('/urls', (req, res) => {
-  console.log(req.body);
-  res.send('OK');
+  const newShortUrl = generateRandomString();
+  if (req.body.longURL.startsWith('http') === false) {
+    urlDatabase[newShortUrl] = 'http://' + req.body.longURL;
+  }
+  console.log(req.body.longURL)
+  urlDatabase[newShortUrl] = req.body.longURL;
+  res.redirect(301, `/urls/${newShortUrl}`);
 });
+
 //Get requests
 //Route for all of the urls in the database
 app.get('/urls', (req, res) => {
@@ -44,6 +50,13 @@ app.get('/urls/:shortURL', (req, res) => {
   const templateVars = { shortURL, longURL: urlDatabase[shortURL] };
   res.render('urls_show', templateVars);
 });
+
+//redirects /u/:shortURL to it's long version
+app.get('/u/:shortURL', (req, res) => {
+  const shortURL = req.params.shortURL;
+  const longURL = urlDatabase[shortURL];
+  res.redirect(301, longURL);
+})
 
 //Sets the PORT we are listening to
 app.listen(PORT, () => {
