@@ -17,15 +17,16 @@ const urlDatabase = {
   '9sm5xK': 'http://www.google.com'
 };
 
-// app.get('/', (req, res) => {
-//   res.send('Hello!');
-// });
 
-// Shows all the data in the urlDatabase
-// app.get('/urls.json', (req, res) => {
-//   res.json(urlDatabase);
-// });
+const generateRandomString = () => {
+  return Math.random().toString(36).slice(2, 8)
+};
 
+app.post('/urls', (req, res) => {
+  console.log(req.body);
+  res.send('OK');
+});
+//Get requests
 //Route for all of the urls in the database
 app.get('/urls', (req, res) => {
   const templateVars = { urls: urlDatabase };
