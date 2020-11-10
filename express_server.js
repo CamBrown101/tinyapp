@@ -22,13 +22,16 @@ const generateRandomString = () => {
   return Math.random().toString(36).slice(2, 8)
 };
 //Post requests
+//Requst from the form submitting link to be shortend 
 app.post('/urls', (req, res) => {
+  //Generate 6 char string for short URL
   const newShortUrl = generateRandomString();
-  if (req.body.longURL.startsWith('http') === false) {
+  urlDatabase[newShortUrl] = req.body.longURL;
+  //Check to see if the url contains http if not add http://
+  if (!req.body.longURL.startsWith('http')) {
     urlDatabase[newShortUrl] = 'http://' + req.body.longURL;
   }
-  console.log(req.body.longURL)
-  urlDatabase[newShortUrl] = req.body.longURL;
+  console.log(urlDatabase)
   res.redirect(301, `/urls/${newShortUrl}`);
 });
 
