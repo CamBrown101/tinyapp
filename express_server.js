@@ -10,7 +10,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 //Sets EJS to generate templates
 app.set('view engine', 'ejs');
-
+// app.use(express.static(__dirname, '/public'))
 //Database object
 const urlDatabase = {
   'b2xVn2': 'http://www.lighthouselabs.ca',
@@ -47,7 +47,6 @@ app.post('/urls', (req, res) => {
 app.post('/urls/:shortURL/delete', (req, res) => {
   // deleteUrl(shortURL)
   deleteUrl(req.params.shortURL)
-  console.log(urlDatabase)
   res.redirect('/urls');
 });
 
