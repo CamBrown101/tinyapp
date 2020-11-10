@@ -17,6 +17,7 @@ const urlDatabase = {
   '9sm5xK': 'http://www.google.com'
 };
 
+//Functions
 //Generates random 6 char string
 const generateRandomString = () => {
   return Math.random().toString(36).slice(2, 8);
@@ -43,6 +44,17 @@ app.post('/urls', (req, res) => {
   res.redirect(`/urls/${newShortUrl}`);
 });
 
+//Route to edit the longURL associacted with a shortURL
+app.post('/urls/:shortURL/edit', (req, res) => {
+  const shortURL = req.params.shortURL;
+  const longURL = req.body.longURL;
+
+  if (longURL.startsWith('http')) {
+    urlDatabase[shortURL] = longURL;
+  };
+
+  res.redirect(`/urls/${shortURL}`);
+});
 //Route to delete an object from the database
 app.post('/urls/:shortURL/delete', (req, res) => {
   // deleteUrl(shortURL)
