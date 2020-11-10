@@ -3,7 +3,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 
 const app = express(); //Sets app as express
-const PORT = 8080 //sets the PORT we are using
+const PORT = 8080; //sets the PORT we are using
 
 //Adds body parser as middleware
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -19,19 +19,19 @@ const urlDatabase = {
 
 
 const generateRandomString = () => {
-  return Math.random().toString(36).slice(2, 8)
+  return Math.random().toString(36).slice(2, 8);
 };
 //Post requests
-//Requst from the form submitting link to be shortend 
+//Requst from the form submitting link to be shortends
 app.post('/urls', (req, res) => {
   //Generate 6 char string for short URL
   const newShortUrl = generateRandomString();
-  urlDatabase[newShortUrl] = req.body.longURL;
   //Check to see if the url contains http if not add http://
   if (!req.body.longURL.startsWith('http')) {
     urlDatabase[newShortUrl] = 'http://' + req.body.longURL;
+  } else {
+    urlDatabase[newShortUrl] = req.body.longURL;
   }
-  console.log(urlDatabase)
   res.redirect(301, `/urls/${newShortUrl}`);
 });
 
@@ -59,7 +59,7 @@ app.get('/u/:shortURL', (req, res) => {
   const shortURL = req.params.shortURL;
   const longURL = urlDatabase[shortURL];
   res.redirect(301, longURL);
-})
+});
 
 //Sets the PORT we are listening to
 app.listen(PORT, () => {
