@@ -1,10 +1,13 @@
 //Imports
 const express = require('express');
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 
 const app = express(); //Sets app as express
 const PORT = 8080; //sets the PORT we are using
+console.log(cookieParser);
 
+app.use(cookieParser());
 //Adds body parser as middleware
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -44,6 +47,11 @@ app.post('/urls', (req, res) => {
   res.redirect(`/urls/${newShortUrl}`);
 });
 
+app.post('/login', (req, res) => {
+  res.cookie('username', req.body.username)
+  res.redirect('/urls')
+})
+
 //Route to edit the longURL associacted with a shortURL
 app.post('/urls/:shortURL/edit', (req, res) => {
   const shortURL = req.params.shortURL;
@@ -57,28 +65,30 @@ app.post('/urls/:shortURL/edit', (req, res) => {
 });
 //Route to delete an object from the database
 app.post('/urls/:shortURL/delete', (req, res) => {
-  // deleteUrl(shortURL)
+  const templateVars = { username: req.cookies['username'] };
   deleteUrl(req.params.shortURL)
-  res.redirect('/urls');
+  res.redirect('/urls', templateVars);
 });
 
 //Get requests
 //Route for all of the urls in the database
 app.get('/urls', (req, res) => {
-  const templateVars = { urls: urlDatabase };
+  const templateVars = { urls: urlDatabase, username: req.cookies['username'] };
   res.render('urls_index', templateVars);
 });
 
 //Route for the page to add a new URL
 app.get('/urls/new', (req, res) => {
-  res.render('urls_new');
+  const templateVars = { username: req.cookies['username'] };
+  res.render('urls_new', templateVars);
 });
 
 //Route to go to a URL by ID
 app.get('/urls/:shortURL', (req, res) => {
   const shortURL = req.params.shortURL;
   const longURL = urlDatabase[shortURL];
-  const templateVars = { shortURL, longURL };
+  const templateVars = { shortURL, longURL, username: req.cookies['username'] };
+
   res.render('urls_show', templateVars);
 });
 
