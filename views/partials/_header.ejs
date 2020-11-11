@@ -11,6 +11,7 @@
       <div class="navbar-nav nav-login-form">
         <a class="nav-item nav-link" href="/urls">My URLs</a>
         <a class="nav-item nav-link" href="/urls/new">Create New URL</a>
+        <!-- Username coming from templateVars -->
         <% if(username){ %>
         <form class="form-inline ml-auto" action="/logout" method="POST">
           <div class="badge badge-primary">

@@ -6,19 +6,36 @@ const cookieParser = require('cookie-parser');
 const app = express(); //Sets app as express
 const PORT = 8080; //sets the PORT we are using
 
+//Middleware
+//Allows us to use an external style sheet
 app.use(express.static('public'))
+//Parses our cookies
 app.use(cookieParser());
 //Adds body parser as middleware
 app.use(bodyParser.urlencoded({ extended: true }));
 
 //Sets EJS to generate templates
 app.set('view engine', 'ejs');
-// app.use(express.static(__dirname, '/public'))
-//Database object
+
+//Database objects
+//URL database
 const urlDatabase = {
   'b2xVn2': 'http://www.lighthouselabs.ca',
   '9sm5xK': 'http://www.google.com'
 };
+//User database
+const usersDatabase = {
+  "userRandomID": {
+    id: "userRandomID",
+    email: "user@example.com",
+    password: "purple-monkey-dinosaur"
+  },
+  "user2RandomID": {
+    id: "user2RandomID",
+    email: "user2@example.com",
+    password: "dishwasher-funk"
+  }
+}
 
 //Functions
 //Generates random 6 char string
@@ -58,6 +75,13 @@ app.post('/logout', (req, res) => {
   res.clearCookie('username');
   res.redirect('/urls');
 })
+app.post('/register', (req, res) => {
+  const userID = generateRandomString();
+  const email = req.body.email;
+  const password = req.body.password;
+  usersDatabase[userID] = { userID, email, password }
+  res.redirect('/urls');
+})
 
 //Route to edit the longURL associacted with a shortURL
 app.post('/urls/:shortURL/edit', (req, res) => {
@@ -77,10 +101,14 @@ app.post('/urls/:shortURL/delete', (req, res) => {
 });
 
 //Get requests
+app.get('/register', (req, res) => {
+  const username = req.cookies['username'];
+  const templateVars = { urls: urlDatabase, username };
+  res.render('registration_page', templateVars)
+});
 //Route for all of the urls in the database
 app.get('/urls', (req, res) => {
   const username = req.cookies['username'];
-  console.log(username)
   const templateVars = { urls: urlDatabase, username };
   res.render('urls_index', templateVars);
 });
@@ -106,7 +134,7 @@ app.get('/urls/:shortURL', (req, res) => {
 app.get('/u/:shortURL', (req, res) => {
   const shortURL = req.params.shortURL;
   const longURL = urlDatabase[shortURL];
-  res.redirect(301, longURL);
+  res.redirect(longURL);
 });
 
 //Sets the PORT we are listening to
