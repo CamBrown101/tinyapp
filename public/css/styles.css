@@ -1,4 +1,10 @@
-/* .edit-input::placeholder {
-  color: black;
-  font-size: 1.1em;
-} */
+/* Header */
+.nav-login-form {
+  width: 100%;
+}
+.nav-login-form, input {
+margin-right: 10px;
+}
+.nav-login-form, button {
+margin-right: 10px;
+}

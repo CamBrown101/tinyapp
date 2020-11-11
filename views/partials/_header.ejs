@@ -1,3 +1,5 @@
+<link rel="stylesheet" href="/css/styles.css">
+
 <header>
   <nav class="navbar navbar-expand-md navbar-dark bg-success">
     <a class="navbar-brand" href="/urls">TinyApp</a>
@@ -6,12 +8,15 @@
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-      <div class="navbar-nav">
+      <div class="navbar-nav nav-login-form">
         <a class="nav-item nav-link" href="/urls">My URLs</a>
         <a class="nav-item nav-link" href="/urls/new">Create New URL</a>
-        <form class="form-inline" action="/login" method="POST">
+        <form class="form-inline ml-auto" action="/login" method="POST">
           <input type="text" name="username" placeholder="username">
           <button type="submit" class="btn btn-primary">Submit</button>
+          <span class="badge badge-secondary">
+            <p style="margin-top: 5px;"><%= username%></p>
+          </span>
         </form>
 
       </div>
