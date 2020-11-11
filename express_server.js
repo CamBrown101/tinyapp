@@ -46,6 +46,15 @@ const generateRandomString = () => {
 const deleteUrl = (urlID) => {
   delete urlDB[urlID]
 };
+//Looks up if email is already in the database returns a boolean
+const doesEmailExist = (email) => {
+  for (id in userDB) {
+    if (email === userDB[id].email) {
+      return true;
+    }
+  }
+  return false;
+};
 
 //Post requests
 //Requst from the form submitting link to be shortends
@@ -76,10 +85,19 @@ app.post('/logout', (req, res) => {
   res.redirect('/urls');
 })
 app.post('/register', (req, res) => {
+  //Check to see if the email or password fields are blank
+  if (!req.body.email || !req.body.password) {
+    return res.status(400).send('No email or password entered!');
+  }
+  //checks to see if the email is already in the database
+  if (doesEmailExist(req.body.email)) {
+    return res.status(400).send('Email Already Exists!');
+  }
   const userID = generateRandomString();
   const email = req.body.email;
   const password = req.body.password;
-  userDB[userID] = { userID, email, password }
+  userDB[userID] = { userID, email, password };
+  res.cookie('user_id', userID);
   res.redirect('/urls');
 })
 
@@ -102,21 +120,21 @@ app.post('/urls/:shortURL/delete', (req, res) => {
 
 //Get requests
 app.get('/register', (req, res) => {
-  const username = req.cookies['username'];
-  const templateVars = { urls: urlDB, username };
+  const user = userDB[req.cookies['user_id']];
+  const templateVars = { urls: urlDB, user };
   res.render('registration_page', templateVars)
 });
 //Route for all of the urls in the database
 app.get('/urls', (req, res) => {
-  const username = req.cookies['username'];
-  const templateVars = { urls: urlDB, username };
+  const user = userDB[req.cookies['user_id']];
+  const templateVars = { urls: urlDB, user };
   res.render('urls_index', templateVars);
 });
 
 //Route for the page to add a new URL
 app.get('/urls/new', (req, res) => {
-  const username = req.cookies['username'];
-  const templateVars = { username };
+  const user = userDB[req.cookies['user_id']];
+  const templateVars = { user };
   res.render('urls_new', templateVars);
 });
 
@@ -124,8 +142,8 @@ app.get('/urls/new', (req, res) => {
 app.get('/urls/:shortURL', (req, res) => {
   const shortURL = req.params.shortURL;
   const longURL = urlDB[shortURL];
-  const username = req.cookies['username'];
-  const templateVars = { shortURL, longURL, username };
+  const user = userDB[req.cookies['user_id']];
+  const templateVars = { shortURL, longURL, user };
 
   res.render('urls_show', templateVars);
 });
