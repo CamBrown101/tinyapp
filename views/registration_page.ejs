@@ -1,31 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
+<%- include('partials/_header') %>
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-  <!-- Bootstrap CSS -->
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
-    integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+<main style="margin: 1em;">
+  <h3>Register a new user</h3>
+  <form action="/register" method="POST">
+    <div class="form-group">
+      <label for="email">Email:</label>
+      <input class="form-control" type="email" name="email" style="width: 300px; margin: 1em">
+      <label for="password">Password:</label>
+      <input class="form-control" type="password" name="password" style="width: 300px; margin: 1em">
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </div>
+  </form>
+</main>
 
-  <title>TinyApp Registration</title>
-</head>
-
-<body>
-  <%- include('partials/_header') %>
-  <main style="margin: 1em;">
-    <h3>Register a new user</h3>
-    <form action="/register" method="POST">
-      <div class="form-group">
-        <label for="email">Email:</label>
-        <input class="form-control" type="email" name="email" style="width: 300px; margin: 1em">
-        <label for="password">Password:</label>
-        <input class="form-control" type="password" name="password" style="width: 300px; margin: 1em">
-        <button type="submit" class="btn btn-primary">Submit</button>
-      </div>
-    </form>
-  </main>
-
-  <%- include('partials/_footer') %>
-
-</html>
+<%- include('partials/_footer') %>

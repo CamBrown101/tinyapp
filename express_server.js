@@ -56,7 +56,9 @@ const deleteUrl = (urlID) => {
 //Looks up if email is already in the database returns a boolean
 const doesEmailExist = (email) => {
   for (id in userDB) {
-    return email === userDB[id].email
+    if (email === userDB[id].email) {
+      return true;
+    }
   }
 };
 
@@ -89,22 +91,21 @@ app.post('/logout', (req, res) => {
   res.redirect('/urls');
 })
 
-
+//Register the new user after validation
 app.post('/register', (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
-
+  const userID = generateRandomString();
   //Check to see if the email or password fields are blank
   if (!email || !password) {
     return res.status(400).send('No email or password entered!');
-  }
-
+  };
   //checks to see if the email is already in the database
+  console.log(doesEmailExist(email))
   if (doesEmailExist(email)) {
     return res.status(400).send('Email Already Exists!');
-  }
+  };
 
-  const userID = generateRandomString();
   userDB[userID] = { userID, email, password };
   res.cookie('user_id', userID);
   res.redirect('/urls');
@@ -130,6 +131,11 @@ app.post('/urls/:shortURL/delete', (req, res) => {
 });
 
 //Get requests
+app.get('/login', (req, res) => {
+  const title = 'Login'
+  const templateVars = { urls: urlDB, title };
+  res.render('login_page', templateVars)
+});
 app.get('/register', (req, res) => {
   const title = 'Register'
   const user = userDB[req.cookies['user_id']];
