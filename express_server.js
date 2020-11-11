@@ -19,12 +19,12 @@ app.set('view engine', 'ejs');
 
 //Database objects
 //URL database
-const urlDatabase = {
+const urlDB = {
   'b2xVn2': 'http://www.lighthouselabs.ca',
   '9sm5xK': 'http://www.google.com'
 };
 //User database
-const usersDatabase = {
+const userDB = {
   "userRandomID": {
     id: "userRandomID",
     email: "user@example.com",
@@ -44,7 +44,7 @@ const generateRandomString = () => {
 };
 //Deletes a URL
 const deleteUrl = (urlID) => {
-  delete urlDatabase[urlID]
+  delete urlDB[urlID]
 };
 
 //Post requests
@@ -60,7 +60,7 @@ app.post('/urls', (req, res) => {
     return
   };
 
-  urlDatabase[newShortUrl] = longURL;
+  urlDB[newShortUrl] = longURL;
   res.redirect(`/urls/${newShortUrl}`);
 });
 //Login and add a cookie with username
@@ -79,7 +79,7 @@ app.post('/register', (req, res) => {
   const userID = generateRandomString();
   const email = req.body.email;
   const password = req.body.password;
-  usersDatabase[userID] = { userID, email, password }
+  userDB[userID] = { userID, email, password }
   res.redirect('/urls');
 })
 
@@ -89,7 +89,7 @@ app.post('/urls/:shortURL/edit', (req, res) => {
   const longURL = req.body.longURL;
 
   if (longURL.startsWith('http')) {
-    urlDatabase[shortURL] = longURL;
+    urlDB[shortURL] = longURL;
   };
 
   res.redirect(`/urls/${shortURL}`);
@@ -103,13 +103,13 @@ app.post('/urls/:shortURL/delete', (req, res) => {
 //Get requests
 app.get('/register', (req, res) => {
   const username = req.cookies['username'];
-  const templateVars = { urls: urlDatabase, username };
+  const templateVars = { urls: urlDB, username };
   res.render('registration_page', templateVars)
 });
 //Route for all of the urls in the database
 app.get('/urls', (req, res) => {
   const username = req.cookies['username'];
-  const templateVars = { urls: urlDatabase, username };
+  const templateVars = { urls: urlDB, username };
   res.render('urls_index', templateVars);
 });
 
@@ -123,7 +123,7 @@ app.get('/urls/new', (req, res) => {
 //Route to go to a URL by ID
 app.get('/urls/:shortURL', (req, res) => {
   const shortURL = req.params.shortURL;
-  const longURL = urlDatabase[shortURL];
+  const longURL = urlDB[shortURL];
   const username = req.cookies['username'];
   const templateVars = { shortURL, longURL, username };
 
@@ -133,7 +133,7 @@ app.get('/urls/:shortURL', (req, res) => {
 //redirects /u/:shortURL to it's long version
 app.get('/u/:shortURL', (req, res) => {
   const shortURL = req.params.shortURL;
-  const longURL = urlDatabase[shortURL];
+  const longURL = urlDB[shortURL];
   res.redirect(longURL);
 });
 
