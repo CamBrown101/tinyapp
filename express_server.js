@@ -46,11 +46,17 @@ app.post('/urls', (req, res) => {
   urlDatabase[newShortUrl] = longURL;
   res.redirect(`/urls/${newShortUrl}`);
 });
-
+//Login and add a cookie with username
 app.post('/login', (req, res) => {
 
-  res.cookie('username', req.body.username)
-  res.redirect('/urls')
+  res.cookie('username', req.body.username);
+  res.redirect('/urls');
+})
+//Logout and remove cookie with username
+app.post('/logout', (req, res) => {
+
+  res.clearCookie('username');
+  res.redirect('/urls');
 })
 
 //Route to edit the longURL associacted with a shortURL

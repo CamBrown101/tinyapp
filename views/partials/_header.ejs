@@ -11,14 +11,19 @@
       <div class="navbar-nav nav-login-form">
         <a class="nav-item nav-link" href="/urls">My URLs</a>
         <a class="nav-item nav-link" href="/urls/new">Create New URL</a>
+        <% if(username){ %>
+        <form class="form-inline ml-auto" action="/logout" method="POST">
+          <div class="badge badge-primary">
+            <p class="username-badge">Logged in as: <%= username%></p>
+          </div>
+          <button type="submit" class="btn btn-danger">Logout</button>
+        </form>
+        <% } else{ %>
         <form class="form-inline ml-auto" action="/login" method="POST">
           <input type="text" name="username" placeholder="username">
-          <button type="submit" class="btn btn-primary">Submit</button>
-          <span class="badge badge-secondary">
-            <p style="margin-top: 5px;"><%= username%></p>
-          </span>
+          <button type="submit" class="btn btn-primary">Login</button>
         </form>
-
+        <% } %>
       </div>
     </div>
   </nav>
