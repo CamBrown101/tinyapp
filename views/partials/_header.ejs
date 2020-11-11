@@ -1,31 +1,51 @@
-<link rel="stylesheet" href="/css/styles.css">
+<html lang="en">
 
-<header>
-  <nav class="navbar navbar-expand-md navbar-dark bg-success">
-    <a class="navbar-brand" href="/urls">TinyApp</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
-      aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-      <div class="navbar-nav nav-login-form">
-        <a class="nav-item nav-link" href="/urls">My URLs</a>
-        <a class="nav-item nav-link" href="/urls/new">Create New URL</a>
-        <!-- Username coming from templateVars -->
-        <% if(user){ %>
-        <form class="form-inline ml-auto" action="/logout" method="POST">
-          <div class="badge badge-primary">
-            <p class="username-badge">Logged in as: <%= user.email%></p>
-          </div>
-          <button type="submit" class="btn btn-danger">Logout</button>
-        </form>
-        <% } else{ %>
-        <form class="form-inline ml-auto" action="/login" method="POST">
-          <input type="text" name="username" placeholder="username">
-          <button type="submit" class="btn btn-primary">Login</button>
-        </form>
-        <% } %>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+
+  <!-- Short description of the document (limit to 150 characters) -->
+  <!-- This content *may* be used as a part of search engine results. -->
+  <meta name="description"
+    content="An app for shortening urls. Second project from Cam Brown (cameron-brown@live.com, github: cambrown101) for Lighthouse Labs Bootcamp">
+  <!-- Control the behavior of search engine crawling and indexing -->
+  <meta name="robots" content="index,follow"><!-- All Search Engines -->
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+    integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+  <!-- Style sheet for this project-->
+  <link rel="stylesheet" href="/css/styles.css">
+  <title>TinyApp: <%= title %></title>
+</head>
+
+<body>
+  <header>
+    <nav class="navbar navbar-expand-md navbar-dark bg-success">
+      <a class="navbar-brand" href="/urls">TinyApp</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
+        aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+        <div class="navbar-nav nav-login-form">
+          <a class="nav-item nav-link" href="/urls">My URLs</a>
+          <a class="nav-item nav-link" href="/urls/new">Create New URL</a>
+          <!-- Username coming from templateVars -->
+          <% if(user){ %>
+          <form class="form-inline ml-auto" action="/logout" method="POST">
+            <div class="badge badge-primary">
+              <p class="username-badge">Logged in as: <%= user.email%></p>
+            </div>
+            <button type="submit" class="btn btn-danger">Logout</button>
+          </form>
+          <% } else{ %>
+          <form class="form-inline ml-auto" action="/login" method="POST">
+            <input type="text" name="username" placeholder="username">
+            <button type="submit" class="btn btn-primary">Login</button>
+          </form>
+          <% } %>
+        </div>
       </div>
-    </div>
-  </nav>
-</header>
+    </nav>
+  </header>

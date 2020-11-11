@@ -1,7 +1,9 @@
 {
   "name": "tinyapp",
   "version": "1.0.0",
+  "author": "Cam Brown, cameron-brown@live.com",
   "description": "",
+  "license": "ISC",
   "main": "index.js",
   "scripts": {
     "start": "./node_modules/.bin/nodemon -L express_server.js",
@@ -11,9 +13,6 @@
     "type": "git",
     "url": "git+https://github.com/CamBrown101/tinyapp.git"
   },
-  "keywords": [],
-  "author": "Cam Brown, cameron-brown@live.com",
-  "license": "ISC",
   "bugs": {
     "url": "https://github.com/CamBrown101/tinyapp/issues"
   },
