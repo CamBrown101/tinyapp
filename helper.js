@@ -13,14 +13,14 @@ const generateRandomString = () => {
 };
 
 //Deletes a URL
-const deleteUrl = (urlID) => {
-  delete urlDB[urlID]
+const deleteUrl = (urlID, database) => {
+  delete database[urlID]
 };
 
 //Looks up if email is already in the database returns a boolean
-const doesEmailExist = (email) => {
-  for (let id in userDB) {
-    if (email === userDB[id].email) {
+const doesEmailExist = (email, database) => {
+  for (let id in database) {
+    if (email === database[id].email) {
       return true;
     }
   }
@@ -35,31 +35,31 @@ const isLoggedIn = (req) => {
 };
 
 //Get password by email
-const getPasswordByEmail = (email) => {
-  for (let id in userDB) {
-    if (userDB[id].email === email) {
-      return userDB[id].password;
+const getPasswordByEmail = (email, database) => {
+  for (let id in database) {
+    if (database[id].email === email) {
+      return database[id].password;
     }
   }
 };
 //Get urls by ID returns an object of objects with the shortUrl as keys
-const getUrlById = (id) => {
+const getUrlById = (id, database) => {
   const urlsById = {};
-  for (let shortURL in urlDB) {
-    if (urlDB[shortURL].userID === id) {
-      urlsById[shortURL] = urlDB[shortURL]
+  for (let shortURL in database) {
+    if (database[shortURL].userID === id) {
+      urlsById[shortURL] = database[shortURL]
     }
   }
   return urlsById;
 };
 //Check to see if a user id matches the id on a url
-const doesLoggedInOwnUrl = (shortURL, loggedInID) => {
+const doesLoggedInOwnUrl = (shortURL, loggedInID, database) => {
   if (!loggedInID) {
     return false;
   };
-  for (let keys in urlDB) {
+  for (let keys in database) {
     if (keys === shortURL) {
-      if (urlDB[keys].userID === loggedInID)
+      if (database[keys].userID === loggedInID)
         return true;
     }
   };

@@ -80,8 +80,8 @@ app.post('/urls', (req, res) => {
 app.post('/login', (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
-  if (doesEmailExist(email)) {
-    if (bcrypt.compareSync(password, getPasswordByEmail(email))) {
+  if (doesEmailExist(email, userDB)) {
+    if (bcrypt.compareSync(password, getPasswordByEmail(email, userDB))) {
       const userID = getIdByEmail(email, userDB);
       req.session.user_id = userID;
       return res.redirect('/urls');
@@ -106,7 +106,7 @@ app.post('/register', (req, res) => {
     return res.status(400).send('No email or password entered!');
   };
   //checks to see if the email is already in the database
-  if (doesEmailExist(email)) {
+  if (doesEmailExist(email, userDB)) {
     return res.status(400).send('Email Already Exists!');
   };
 
@@ -121,7 +121,7 @@ app.post('/urls/:shortURL/edit', (req, res) => {
   const longURL = req.body.longURL;
   const loggedInID = req.session.user_id;
   // const [short, long] = fn(req)
-  if (doesLoggedInOwnUrl(shortURL, loggedInID)) {
+  if (doesLoggedInOwnUrl(shortURL, loggedInID, userDB)) {
     if (longURL.startsWith('http')) {
       urlDB[shortURL].longURL = longURL;
       return res.redirect(`/urls/${shortURL}`);
@@ -135,8 +135,8 @@ app.post('/urls/:shortURL/edit', (req, res) => {
 app.post('/urls/:shortURL/delete', (req, res) => {
   const shortURL = req.params.shortURL;
   const loggedInID = req.session.user_id;
-  if (doesLoggedInOwnUrl(shortURL, loggedInID)) {
-    deleteUrl(shortURL)
+  if (doesLoggedInOwnUrl(shortURL, loggedInID, userDB)) {
+    deleteUrl(shortURL, urlDB)
     return res.redirect('/urls');
   };
   res.status(401).send('You must be logged in!')
@@ -167,7 +167,7 @@ app.get('/urls', (req, res) => {
   };
   const title = 'Urls';
   const user = userDB[req.session.user_id];
-  const urls = getUrlById(user.id);
+  const urls = getUrlById(user.id, userDB);
   const templateVars = { urls, user, title };
 
   res.render('urls_index', templateVars);
@@ -176,7 +176,7 @@ app.get('/urls', (req, res) => {
 //Route for the page to add a new URL
 app.get('/urls/new', (req, res) => {
   const title = 'New Url';
-  const user = userDB[req.cookies['user_id']];
+  const user = userDB[req.session.user_id];
   const templateVars = { user, title };
   // console.log(isLoggedIn(req))
   if (!isLoggedIn(req)) {
