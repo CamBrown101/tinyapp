@@ -62,6 +62,14 @@ const doesEmailExist = (email) => {
   }
 };
 
+//Checks to see if a user is logged in and returns a boolean
+const isLoggedIn = (req) => {
+  if (!req.cookies['user_id']) {
+    return null;
+  }
+  return true;
+};
+
 //Get ID by user name
 const getIdByEmail = (email) => {
   for (let id in userDB) {
@@ -183,7 +191,12 @@ app.get('/urls/new', (req, res) => {
   const title = 'New Url'
   const user = userDB[req.cookies['user_id']];
   const templateVars = { user, title };
-  res.render('urls_new', templateVars);
+  // console.log(isLoggedIn(req))
+  if (!isLoggedIn(req)) {
+    return res.redirect('/login')
+  };
+  res.render('urls_new', templateVars)
+
 });
 
 //Route to go to a URL by ID
