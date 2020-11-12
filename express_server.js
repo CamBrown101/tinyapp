@@ -92,7 +92,7 @@ app.post('/login', (req, res) => {
 
 //Logout and remove cookie with user_id
 app.post('/logout', (req, res) => {
-  res.clearCookie('user_id');
+  res.session = null;
   res.redirect('/login');
 })
 
@@ -111,7 +111,7 @@ app.post('/register', (req, res) => {
   };
 
   userDB[userID] = { userID, email, password };
-  res.cookie('user_id', userID);
+  res.session.user_id = userID;
   res.redirect('/urls');
 })
 
@@ -121,7 +121,7 @@ app.post('/urls/:shortURL/edit', (req, res) => {
   const longURL = req.body.longURL;
   const loggedInID = req.session.user_id;
   // const [short, long] = fn(req)
-  if (doesLoggedInOwnUrl(shortURL, loggedInID, userDB)) {
+  if (doesLoggedInOwnUrl(shortURL, loggedInID, urlDB)) {
     if (longURL.startsWith('http')) {
       urlDB[shortURL].longURL = longURL;
       return res.redirect(`/urls/${shortURL}`);
@@ -135,7 +135,7 @@ app.post('/urls/:shortURL/edit', (req, res) => {
 app.post('/urls/:shortURL/delete', (req, res) => {
   const shortURL = req.params.shortURL;
   const loggedInID = req.session.user_id;
-  if (doesLoggedInOwnUrl(shortURL, loggedInID, userDB)) {
+  if (doesLoggedInOwnUrl(shortURL, loggedInID, urlDB)) {
     deleteUrl(shortURL, urlDB)
     return res.redirect('/urls');
   };
@@ -167,7 +167,7 @@ app.get('/urls', (req, res) => {
   };
   const title = 'Urls';
   const user = userDB[req.session.user_id];
-  const urls = getUrlById(user.id, userDB);
+  const urls = getUrlById(user.id, urlDB);
   const templateVars = { urls, user, title };
 
   res.render('urls_index', templateVars);
