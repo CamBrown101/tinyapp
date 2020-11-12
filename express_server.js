@@ -1,8 +1,8 @@
 //Imports
 const express = require('express');
 const bodyParser = require('body-parser');
-const cookieParser = require('cookie-parser');
 const bcrypt = require('bcrypt');
+const cookieSession = require('cookie-session');
 
 //Sets app as express
 const app = express();
@@ -18,7 +18,10 @@ app.set('view engine', 'ejs');
 app.use(express.static('public'))
 
 //Parses our cookies
-app.use(cookieParser());
+app.use(cookieSession({
+  name: 'session',
+  keys: ['TinyAppRules']
+}));
 
 //Adds body parser as middleware
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -77,7 +80,7 @@ const doesEmailExist = (email) => {
 
 //Checks to see if a user is logged in and returns a boolean
 const isLoggedIn = (req) => {
-  if (!req.cookies['user_id']) {
+  if (!req.session.user_id) {
     return null;
   }
   return true;
@@ -129,7 +132,7 @@ app.post('/urls', (req, res) => {
   //Generate 6 char string for short URL
   const newShortUrl = generateRandomString();
   const longURL = req.body.longURL;
-  const userID = req.cookies['user_id'];
+  const userID = req.session.user_id;
 
   //Check to see if the url contains http if not add http://
   if (!req.body.longURL.startsWith('http')) {
@@ -147,7 +150,7 @@ app.post('/login', (req, res) => {
   if (doesEmailExist(email)) {
     if (bcrypt.compareSync(password, getPasswordByEmail(email))) {
       const userID = getIdByEmail(email);
-      res.cookie('user_id', userID);
+      req.session.user_id = userID;
       return res.redirect('/urls');
     }
   }
@@ -183,7 +186,7 @@ app.post('/register', (req, res) => {
 app.post('/urls/:shortURL/edit', (req, res) => {
   const shortURL = req.params.shortURL;
   const longURL = req.body.longURL;
-  const loggedInID = req.cookies['user_id'];
+  const loggedInID = req.session.user_id;
   // const [short, long] = fn(req)
   if (doesLoggedInOwnUrl(shortURL, loggedInID)) {
     if (longURL.startsWith('http')) {
@@ -198,7 +201,7 @@ app.post('/urls/:shortURL/edit', (req, res) => {
 //Route to delete an object from the database
 app.post('/urls/:shortURL/delete', (req, res) => {
   const shortURL = req.params.shortURL;
-  const loggedInID = req.cookies['user_id'];
+  const loggedInID = req.session.user_id;
   if (doesLoggedInOwnUrl(shortURL, loggedInID)) {
     deleteUrl(shortURL)
     return res.redirect('/urls');
@@ -211,7 +214,7 @@ app.post('/urls/:shortURL/delete', (req, res) => {
 //Route for the login page
 app.get('/login', (req, res) => {
   const title = 'Login';
-  const user = userDB[req.cookies['user_id']];
+  const user = userDB[req.session.user_id];
   const templateVars = { urls: urlDB, user, title };
   res.render('login_page', templateVars);
 });
@@ -219,7 +222,7 @@ app.get('/login', (req, res) => {
 //Route for the register page
 app.get('/register', (req, res) => {
   const title = 'Register';
-  const user = userDB[req.cookies['user_id']];
+  const user = userDB[req.session.user_id];
   const templateVars = { urls: urlDB, user, title };
   res.render('registration_page', templateVars);
 });
@@ -230,7 +233,7 @@ app.get('/urls', (req, res) => {
     return res.redirect('/login')
   };
   const title = 'Urls';
-  const user = userDB[req.cookies['user_id']];
+  const user = userDB[req.session.user_id];
   const urls = getUrlById(user.id);
   const templateVars = { urls, user, title };
 
@@ -255,7 +258,7 @@ app.get('/urls/:shortURL', (req, res) => {
   const title = 'Short Url'
   const shortURL = req.params.shortURL;
   const longURL = urlDB[shortURL].longURL;
-  const user = userDB[req.cookies['user_id']];
+  const user = userDB[req.session.user_id];
   const templateVars = { shortURL, longURL, user, title };
   res.render('urls_show', templateVars);
 });
