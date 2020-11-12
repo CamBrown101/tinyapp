@@ -206,6 +206,7 @@ app.post('/urls/:shortURL/delete', (req, res) => {
 });
 
 //Get requests
+//Route for the login page
 app.get('/login', (req, res) => {
   const title = 'Login';
   const user = userDB[req.cookies['user_id']];
@@ -213,6 +214,7 @@ app.get('/login', (req, res) => {
   res.render('login_page', templateVars);
 });
 
+//Route for the register page
 app.get('/register', (req, res) => {
   const title = 'Register';
   const user = userDB[req.cookies['user_id']];
