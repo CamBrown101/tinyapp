@@ -3,7 +3,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const bcrypt = require('bcrypt');
 const cookieSession = require('cookie-session');
-const { getIdByEmail, generateRandomString, deleteUrl, doesEmailExist, isLoggedIn, getPasswordByEmail, getUrlById, doesLoggedInOwnUrl } = require('./helper')
+const { getIdByEmail, generateRandomString, deleteUrl, doesEmailExist, isLoggedIn, getPasswordByEmail, getUrlById, doesLoggedInOwnUrl } = require('./helpers')
 
 //Sets app as express
 const app = express();
