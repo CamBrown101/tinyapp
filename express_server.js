@@ -92,7 +92,7 @@ app.post('/login', (req, res) => {
 
 //Logout and remove cookie with user_id
 app.post('/logout', (req, res) => {
-  res.session = null;
+  req.session = null;
   res.redirect('/login');
 })
 
@@ -111,7 +111,7 @@ app.post('/register', (req, res) => {
   };
 
   userDB[userID] = { userID, email, password };
-  res.session.user_id = userID;
+  req.session.user_id = userID;
   res.redirect('/urls');
 })
 
