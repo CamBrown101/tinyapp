@@ -55,12 +55,30 @@ const deleteUrl = (urlID) => {
 };
 //Looks up if email is already in the database returns a boolean
 const doesEmailExist = (email) => {
-  for (id in userDB) {
+  for (let id in userDB) {
     if (email === userDB[id].email) {
       return true;
     }
   }
 };
+
+//Get ID by user name
+const getIdByEmail = (email) => {
+  for (let id in userDB) {
+    if (userDB[id].email === email) {
+      return id
+    }
+  }
+}
+
+//Get password by email
+const getPasswordByEmail = (email) => {
+  for (let id in userDB) {
+    if (userDB[id].email === email) {
+      return userDB[id].password;
+    }
+  }
+}
 
 //Post requests
 //Requst from the form submitting link to be shortends
@@ -78,17 +96,25 @@ app.post('/urls', (req, res) => {
   res.redirect(`/urls/${newShortUrl}`);
 });
 
-//Login and add a cookie with username
+//Login and add a cookie with userID
 app.post('/login', (req, res) => {
-
-  res.cookie('username', req.body.username);
-  res.redirect('/urls');
+  const email = req.body.email;
+  const password = req.body.password;
+  if (doesEmailExist(email)) {
+    if (getPasswordByEmail(email) === password) {
+      const userID = getIdByEmail(email);
+      console.log(userID)
+      res.cookie('user_id', userID);
+      return res.redirect('/urls');
+    }
+  }
+  res.status(403).send('Email or password was incorrect!')
 })
 
-//Logout and remove cookie with username
+//Logout and remove cookie with user_id
 app.post('/logout', (req, res) => {
-  res.clearCookie('username');
-  res.redirect('/urls');
+  res.clearCookie('user_id');
+  res.redirect('/login');
 })
 
 //Register the new user after validation
@@ -101,7 +127,6 @@ app.post('/register', (req, res) => {
     return res.status(400).send('No email or password entered!');
   };
   //checks to see if the email is already in the database
-  console.log(doesEmailExist(email))
   if (doesEmailExist(email)) {
     return res.status(400).send('Email Already Exists!');
   };
@@ -133,7 +158,8 @@ app.post('/urls/:shortURL/delete', (req, res) => {
 //Get requests
 app.get('/login', (req, res) => {
   const title = 'Login'
-  const templateVars = { urls: urlDB, title };
+  const user = userDB[req.cookies['user_id']];
+  const templateVars = { urls: urlDB, user, title };
   res.render('login_page', templateVars)
 });
 app.get('/register', (req, res) => {

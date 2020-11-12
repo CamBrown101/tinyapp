@@ -1,14 +1,18 @@
 /* Header */
 .nav-login-form {
   width: 100%;
+  vertical-align: middle;
 }
 .nav-login-form, input {
+  margin-right: 10px;
+}
+.nav-login-form, username-badge {
   margin-right: 10px;
 }
 .nav-login-form, button {
   margin-right: 10px;
 }
-.badge {
+.head-buttons {
   height: 95%;
   display: flex;
   align-items: center;
@@ -16,4 +20,6 @@
 }
 .username-badge {
   margin: 0;
+  padding-top: 10px;
+  padding-bottom: 10px;
 }

@@ -31,21 +31,20 @@
         <div class="navbar-nav nav-login-form">
           <a class="nav-item nav-link" href="/urls">My URLs</a>
           <a class="nav-item nav-link" href="/urls/new">Create New URL</a>
-          <!-- Username coming from templateVars -->
-          <% if(user){ %>
+          <!-- User coming from templateVars -->
+          <% if (user) {%>
           <form class="form-inline ml-auto" action="/logout" method="POST">
             <div class="badge badge-primary">
-              <p class="username-badge">Logged in as: <%= user.email%></p>
+              <p class="username-badge ">Logged in as: <%= user.email%></p>
             </div>
             <button type="submit" class="btn btn-danger">Logout</button>
           </form>
-          <% } else{ %>
-          <form class="form-inline ml-auto" action="/login" method="POST">
-            <input type="text" name="username" placeholder="username">
-            <button type="submit" class="btn btn-primary">Login</button>
-          </form>
+          <% } else { %>
+          <div class="ml-auto">
+            <a class="btn btn-primary" href="/register">Signup</a>
+            <a class="btn btn-primary" href="/login">Login</a>
+          </div>
           <% } %>
         </div>
-      </div>
     </nav>
   </header>
