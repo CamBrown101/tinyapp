@@ -87,9 +87,9 @@ const isLoggedIn = (req) => {
 };
 
 //Get ID by user name
-const getIdByEmail = (email) => {
-  for (let id in userDB) {
-    if (userDB[id].email === email) {
+const getIdByEmail = (email, database) => {
+  for (let id in database) {
+    if (database[id].email === email) {
       return id
     }
   }
@@ -149,7 +149,7 @@ app.post('/login', (req, res) => {
   const password = req.body.password;
   if (doesEmailExist(email)) {
     if (bcrypt.compareSync(password, getPasswordByEmail(email))) {
-      const userID = getIdByEmail(email);
+      const userID = getIdByEmail(email, userDB);
       req.session.user_id = userID;
       return res.redirect('/urls');
     }
