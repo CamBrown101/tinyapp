@@ -2,6 +2,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
+const bcrypt = require('bcrypt');
 
 //Sets app as express
 const app = express();
@@ -50,7 +51,7 @@ const userDB = {
   "1": {
     id: "1",
     email: "a@b.com",
-    password: "1"
+    password: bcrypt.hashSync("1", 10)
   }
 };
 
@@ -144,7 +145,7 @@ app.post('/login', (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
   if (doesEmailExist(email)) {
-    if (getPasswordByEmail(email) === password) {
+    if (bcrypt.compareSync(password, getPasswordByEmail(email))) {
       const userID = getIdByEmail(email);
       res.cookie('user_id', userID);
       return res.redirect('/urls');
@@ -162,7 +163,7 @@ app.post('/logout', (req, res) => {
 //Register the new user after validation
 app.post('/register', (req, res) => {
   const email = req.body.email;
-  const password = req.body.password;
+  const password = bcrypt.hashSync(req.body.password, 10);
   const userID = generateRandomString();
   //Check to see if the email or password fields are blank
   if (!email || !password) {
