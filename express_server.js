@@ -26,8 +26,13 @@ app.use(bodyParser.urlencoded({ extended: true }));
 //Database objects
 //URL database
 const urlDB = {
-  'b2xVn2': 'http://www.lighthouselabs.ca',
-  '9sm5xK': 'http://www.google.com'
+
+  b6UTxQ: { longURL: "https://www.tsn.ca", userID: "aJ3dlW" },
+  b6UTxQ: { longURL: "https://wwwa.tsn.ca", userID: "aJ3flW" },
+  b6UTxQ: { longURL: "https://wwwa.tsn.ca", userID: "aJ38lW" },
+  b6UTxQ: { longURL: "https://www.tssn.ca", userID: "aJ48lW" },
+  i4BoGr: { longURL: "https://www.google.ca", userID: "1" },
+  i3BoGr: { longURL: "https://www.gfdoogle.ca", userID: "1" }
 };
 
 //User database
@@ -41,6 +46,11 @@ const userDB = {
     id: "user2RandomID",
     email: "user2@example.com",
     password: "dishwasher-funk"
+  },
+  "1": {
+    id: "1",
+    email: "a@b.com",
+    password: "1"
   }
 };
 
@@ -49,10 +59,12 @@ const userDB = {
 const generateRandomString = () => {
   return Math.random().toString(36).slice(2, 8);
 };
+
 //Deletes a URL
 const deleteUrl = (urlID) => {
   delete urlDB[urlID]
 };
+
 //Looks up if email is already in the database returns a boolean
 const doesEmailExist = (email) => {
   for (let id in userDB) {
@@ -77,7 +89,7 @@ const getIdByEmail = (email) => {
       return id
     }
   }
-}
+};
 
 //Get password by email
 const getPasswordByEmail = (email) => {
@@ -86,7 +98,17 @@ const getPasswordByEmail = (email) => {
       return userDB[id].password;
     }
   }
-}
+};
+//Get urls by ID returns an object of objects with the shortUrl as keys
+const getUrlById = (id) => {
+  const urlsById = {};
+  for (let shortURL in urlDB) {
+    if (urlDB[shortURL].userID === id) {
+      urlsById[shortURL] = urlDB[shortURL]
+    }
+  }
+  return urlsById;
+};
 
 //Post requests
 //Requst from the form submitting link to be shortends
@@ -94,13 +116,14 @@ app.post('/urls', (req, res) => {
   //Generate 6 char string for short URL
   const newShortUrl = generateRandomString();
   const longURL = req.body.longURL;
+  const userID = req.cookies['user_id'];
 
   //Check to see if the url contains http if not add http://
   if (!req.body.longURL.startsWith('http')) {
     return res.redirect('urls/new');
   };
 
-  urlDB[newShortUrl] = longURL;
+  urlDB[newShortUrl] = { longURL, userID };
   res.redirect(`/urls/${newShortUrl}`);
 });
 
@@ -111,7 +134,6 @@ app.post('/login', (req, res) => {
   if (doesEmailExist(email)) {
     if (getPasswordByEmail(email) === password) {
       const userID = getIdByEmail(email);
-      console.log(userID)
       res.cookie('user_id', userID);
       return res.redirect('/urls');
     }
@@ -151,7 +173,7 @@ app.post('/urls/:shortURL/edit', (req, res) => {
   // const [short, long] = fn(req)
 
   if (longURL.startsWith('http')) {
-    urlDB[shortURL] = longURL;
+    urlDB[shortURL].longURL = longURL;
   };
 
   res.redirect(`/urls/${shortURL}`);
@@ -170,6 +192,7 @@ app.get('/login', (req, res) => {
   const templateVars = { urls: urlDB, user, title };
   res.render('login_page', templateVars)
 });
+
 app.get('/register', (req, res) => {
   const title = 'Register'
   const user = userDB[req.cookies['user_id']];
@@ -180,9 +203,10 @@ app.get('/register', (req, res) => {
 //Route for all of the urls in the database
 app.get('/urls', (req, res) => {
   const title = 'Urls'
-  const urls = urlDB;
   const user = userDB[req.cookies['user_id']];
+  const urls = getUrlById(user.id)
   const templateVars = { urls, user, title };
+
   res.render('urls_index', templateVars);
 });
 
@@ -203,7 +227,7 @@ app.get('/urls/new', (req, res) => {
 app.get('/urls/:shortURL', (req, res) => {
   const title = 'Short Url'
   const shortURL = req.params.shortURL;
-  const longURL = urlDB[shortURL];
+  const longURL = urlDB[shortURL].longURL;
   const user = userDB[req.cookies['user_id']];
   const templateVars = { shortURL, longURL, user, title };
   res.render('urls_show', templateVars);
@@ -212,7 +236,7 @@ app.get('/urls/:shortURL', (req, res) => {
 //redirects /u/:shortURL to it's long version
 app.get('/u/:shortURL', (req, res) => {
   const shortURL = req.params.shortURL;
-  const longURL = urlDB[shortURL];
+  const longURL = urlDB[shortURL].longURL;
   res.redirect(longURL);
 });
 
