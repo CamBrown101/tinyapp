@@ -109,6 +109,16 @@ const getUrlById = (id) => {
   }
   return urlsById;
 };
+//Check to see if a user iD matches the iD on a url
+const doesLoggedInOwnUrl = (shortURL, loggedInID) => {
+  if (!loggedInID) {
+    return false;
+  };
+  for (let shortUrl in urlDB) {
+    if (urlDB[shortUrl].userID === loggedInID)
+      return true;
+  };
+};
 
 //Post requests
 //Requst from the form submitting link to be shortends
@@ -170,41 +180,54 @@ app.post('/register', (req, res) => {
 app.post('/urls/:shortURL/edit', (req, res) => {
   const shortURL = req.params.shortURL;
   const longURL = req.body.longURL;
+  const loggedInID = req.cookies['user_id'];
   // const [short, long] = fn(req)
-
-  if (longURL.startsWith('http')) {
-    urlDB[shortURL].longURL = longURL;
+  if (doesLoggedInOwnUrl(shortURL, loggedInID)) {
+    if (longURL.startsWith('http')) {
+      urlDB[shortURL].longURL = longURL;
+      return res.redirect(`/urls/${shortURL}`);
+    }
   };
-
-  res.redirect(`/urls/${shortURL}`);
+  res.status(404).send('Not logged in!')
+  return res.redirect('/urls');
 });
 
 //Route to delete an object from the database
 app.post('/urls/:shortURL/delete', (req, res) => {
-  deleteUrl(req.params.shortURL)
-  res.redirect('/urls');
+  const shortURL = req.params.shortURL;
+  const loggedInID = req.cookies['user_id'];
+  if (doesLoggedInOwnUrl(shortURL, loggedInID)) {
+    deleteUrl(shortURL)
+    return res.redirect('/urls');
+  };
+  res.status(404).send('Not logged in!')
+  return res.redirect('/urls');
+
 });
 
 //Get requests
 app.get('/login', (req, res) => {
-  const title = 'Login'
+  const title = 'Login';
   const user = userDB[req.cookies['user_id']];
   const templateVars = { urls: urlDB, user, title };
-  res.render('login_page', templateVars)
+  res.render('login_page', templateVars);
 });
 
 app.get('/register', (req, res) => {
-  const title = 'Register'
+  const title = 'Register';
   const user = userDB[req.cookies['user_id']];
   const templateVars = { urls: urlDB, user, title };
-  res.render('registration_page', templateVars)
+  res.render('registration_page', templateVars);
 });
 
 //Route for all of the urls in the database
 app.get('/urls', (req, res) => {
-  const title = 'Urls'
+  if (!isLoggedIn(req)) {
+    return res.redirect('/login')
+  };
+  const title = 'Urls';
   const user = userDB[req.cookies['user_id']];
-  const urls = getUrlById(user.id)
+  const urls = getUrlById(user.id);
   const templateVars = { urls, user, title };
 
   res.render('urls_index', templateVars);
@@ -212,14 +235,14 @@ app.get('/urls', (req, res) => {
 
 //Route for the page to add a new URL
 app.get('/urls/new', (req, res) => {
-  const title = 'New Url'
+  const title = 'New Url';
   const user = userDB[req.cookies['user_id']];
   const templateVars = { user, title };
   // console.log(isLoggedIn(req))
   if (!isLoggedIn(req)) {
     return res.redirect('/login')
   };
-  res.render('urls_new', templateVars)
+  res.render('urls_new', templateVars);
 
 });
 
