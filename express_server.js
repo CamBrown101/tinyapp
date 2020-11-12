@@ -109,14 +109,16 @@ const getUrlById = (id) => {
   }
   return urlsById;
 };
-//Check to see if a user iD matches the iD on a url
+//Check to see if a user id matches the id on a url
 const doesLoggedInOwnUrl = (shortURL, loggedInID) => {
   if (!loggedInID) {
     return false;
   };
-  for (let shortUrl in urlDB) {
-    if (urlDB[shortUrl].userID === loggedInID)
-      return true;
+  for (let keys in urlDB) {
+    if (keys === shortURL) {
+      if (urlDB[keys].userID === loggedInID)
+        return true;
+    }
   };
 };
 
@@ -188,8 +190,8 @@ app.post('/urls/:shortURL/edit', (req, res) => {
       return res.redirect(`/urls/${shortURL}`);
     }
   };
-  res.status(404).send('Not logged in!')
-  return res.redirect('/urls');
+  res.status(401).send('You must be logged in!')
+  // return res.redirect('/login');
 });
 
 //Route to delete an object from the database
@@ -200,9 +202,8 @@ app.post('/urls/:shortURL/delete', (req, res) => {
     deleteUrl(shortURL)
     return res.redirect('/urls');
   };
-  res.status(404).send('Not logged in!')
-  return res.redirect('/urls');
-
+  res.status(401).send('You must be logged in!')
+  // return res.redirect('/login');
 });
 
 //Get requests
