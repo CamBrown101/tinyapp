@@ -23,12 +23,12 @@
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-        <div class="navbar-nav nav-login-form">
+        <div class="navbar-nav nav-login-form align-center">
           <a class="nav-item nav-link" href="/urls">My URLs</a>
           <a class="nav-item nav-link" href="/urls/new">Create New Short URL</a>
           <!-- User coming from templateVars -->
           <% if (user) {%>
-          <form class="form-inline ml-auto" action="/logout" method="POST">
+          <form class="form-inline ml-auto remove-margin" action="/logout" method="POST">
             <div class="badge badge-primary">
               <p class="username-badge ">Logged in as: <%= user.email%></p>
             </div>

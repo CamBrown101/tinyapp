@@ -12,6 +12,15 @@
 .nav-login-form, button {
   margin-right: 10px;
 }
+.remove-margin {
+  margin-bottom: 0;
+}
+.remove-margin div {
+  margin-right:10px;
+}
+.align-center {
+  align-items: center;
+}
 .head-buttons {
   height: 95%;
   display: flex;
