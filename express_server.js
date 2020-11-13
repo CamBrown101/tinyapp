@@ -37,7 +37,7 @@ const urlDB = {
 //User database
 const userDB = {
   "1": {
-    id: "1",
+    userID: "1",
     email: "a@b.com",
     password: bcrypt.hashSync("1", 10)
   }
@@ -75,7 +75,6 @@ app.post('/register', (req, res) => {
   if (!email || !password) {
     return res.status(400).send('No email or password entered!');
   }
-
   if (doesEmailExist(email, userDB)) {
     return res.status(400).send('Email Already Exists!');
   }
@@ -172,10 +171,9 @@ app.get('/urls', (req, res) => {
   if (!isLoggedIn(req)) {
     return res.status(401).send('You must be logged in!');
   }
-
   const title = 'Urls';
   const user = userDB[req.session.user_id];
-  const urls = getUrlById(user.id, urlDB);
+  const urls = getUrlById(user.userID, urlDB);
   const templateVars = { urls, user, title };
   res.render('urls_index', templateVars);
 });
