@@ -73,10 +73,10 @@ app.post('/register', (req, res) => {
 
   //Check to see if the email or password fields are blank
   if (!email || !password) {
-    return res.redirect('/emptyfield')
+    return res.redirect('/emptyField')
   }
   if (doesEmailExist(email, userDB)) {
-    return res.status(400).send('Email Already Exists!');
+    return res.redirect('/emailExists');
   }
 
   userDB[userID] = { userID, email, password };
@@ -87,7 +87,7 @@ app.post('/register', (req, res) => {
 //Requst from the form submitting link to be shortends
 app.post('/urls', (req, res) => {
   if (!isLoggedIn(req)) {
-    return res.redirect('/mustlogin');
+    return res.redirect('/mustLogin');
   }
 
   //Generate 6 char string for short URL
@@ -110,10 +110,10 @@ app.post('/urls/:shortURL', (req, res) => {
   const loggedInID = req.session.user_id;
 
   if (!isLoggedIn(req)) {
-    return res.redirect('/mustlogin');
+    return res.redirect('/mustLogin');
   }
   if (!doesLoggedInOwnUrl(shortURL, loggedInID, urlDB)) {
-    return res.redirect('/mustlogin');
+    return res.redirect('/mustLogin');
   }
   if (!longURL.startsWith('http')) {
     return res.redirect(`${shortURL}`);
@@ -129,10 +129,10 @@ app.post('/urls/:shortURL/delete', (req, res) => {
   const loggedInID = req.session.user_id;
 
   if (!isLoggedIn(req)) {
-    return res.redirect('/mustlogin');
+    return res.redirect('/mustLogin');
   }
   if (!doesLoggedInOwnUrl(shortURL, loggedInID, urlDB)) {
-    return res.redirect('/mustlogin');
+    return res.redirect('/mustLogin');
   }
 
   deleteUrl(shortURL, urlDB);
@@ -154,7 +154,7 @@ app.get('/login', (req, res) => {
 });
 
 //Route for Must login page
-app.get('/mustlogin', (req, res) => {
+app.get('/mustLogin', (req, res) => {
   const title = 'Login';
   const user = userDB[req.session.user_id];
   const templateVars = { urls: urlDB, user, title };
@@ -179,7 +179,7 @@ app.get('/register', (req, res) => {
 });
 
 //Route for Empty input page
-app.get('/emptyfield', (req, res) => {
+app.get('/emptyField', (req, res) => {
   const title = 'Register';
   const user = userDB[req.session.user_id];
   const templateVars = { urls: urlDB, user, title };
@@ -188,13 +188,26 @@ app.get('/emptyfield', (req, res) => {
     return res.redirect('/urls');
   }
 
-  res.render('emptyfield', templateVars);
+  res.render('empty_field', templateVars);
+});
+
+//Route for email already exists page
+app.get('/emailExists', (req, res) => {
+  const title = 'Register';
+  const user = userDB[req.session.user_id];
+  const templateVars = { urls: urlDB, user, title };
+
+  if (isLoggedIn(req)) {
+    return res.redirect('/urls');
+  }
+
+  res.render('email_exists', templateVars);
 });
 
 //Route for all of the urls in the database
 app.get('/urls', (req, res) => {
   if (!isLoggedIn(req)) {
-    return res.redirect('/mustlogin');
+    return res.redirect('/mustLogin');
   }
 
   const title = 'Urls';
@@ -226,7 +239,7 @@ app.get('/urls/:shortURL', (req, res) => {
     return res.status(404).send('Short URL not found!');
   }
   if (!isLoggedIn(req)) {
-    return res.redirect('/mustlogin');
+    return res.redirect('/mustLogin');
   }
   if (!doesLoggedInOwnUrl(shortURL, loggedInID, urlDB)) {
     res.status(401).send('That URL does not belong to you!');
