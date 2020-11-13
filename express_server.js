@@ -56,7 +56,7 @@ app.post('/login', (req, res) => {
     }
   }
 
-  res.status(403).send('Email or password was incorrect!');
+  res.redirect('/loginError');
 });
 
 //Logout and remove cookie with user_id
@@ -151,6 +151,19 @@ app.get('/login', (req, res) => {
   }
 
   res.render('login_page', templateVars);
+});
+
+//Route for an authorized login
+app.get('/loginError', (req, res) => {
+  const title = 'Login';
+  const user = userDB[req.session.user_id];
+  const templateVars = { urls: urlDB, user, title };
+
+  if (isLoggedIn(req)) {
+    return res.redirect('/urls');
+  }
+
+  res.render('login_error', templateVars);
 });
 
 //Route for Must login page

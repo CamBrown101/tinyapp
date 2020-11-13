@@ -1,9 +1,9 @@
 <%- include('partials/_header') %>
 
 <main style="margin: 1em;">
-  <h3>Register a new user</h3>
-  <h4 class="error">Email already exists!</h4>
-  <form action="/register" method="POST">
+  <h3>Login</h3>
+  <h4 class="error">Email or password was incorrect!</h4>
+  <form action="/login" method="POST">
     <div class="form-group">
       <label for="email">Email:</label>
       <input class="form-control form-style" type="email" name="email">
