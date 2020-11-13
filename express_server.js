@@ -59,18 +59,6 @@ app.post('/login', (req, res) => {
   res.status(403).send('Email or password was incorrect!');
 });
 
-//Route for Must login page
-app.get('/mustlogin', (req, res) => {
-  const title = 'Login';
-  const user = userDB[req.session.user_id];
-  const templateVars = { urls: urlDB, user, title };
-
-  if (isLoggedIn(req)) {
-    return res.redirect('/urls');
-  }
-  res.render('must_login', templateVars);
-});
-
 //Logout and remove cookie with user_id
 app.post('/logout', (req, res) => {
   req.session = null;
@@ -85,7 +73,7 @@ app.post('/register', (req, res) => {
 
   //Check to see if the email or password fields are blank
   if (!email || !password) {
-    return res.status(400).send('No email or password entered!');
+    return res.redirect('/emptyfield')
   }
   if (doesEmailExist(email, userDB)) {
     return res.status(400).send('Email Already Exists!');
@@ -165,6 +153,18 @@ app.get('/login', (req, res) => {
   res.render('login_page', templateVars);
 });
 
+//Route for Must login page
+app.get('/mustlogin', (req, res) => {
+  const title = 'Login';
+  const user = userDB[req.session.user_id];
+  const templateVars = { urls: urlDB, user, title };
+
+  if (isLoggedIn(req)) {
+    return res.redirect('/urls');
+  }
+  res.render('must_login', templateVars);
+});
+
 //Route for the register page
 app.get('/register', (req, res) => {
   const title = 'Register';
@@ -176,6 +176,19 @@ app.get('/register', (req, res) => {
   }
 
   res.render('registration_page', templateVars);
+});
+
+//Route for Empty input page
+app.get('/emptyfield', (req, res) => {
+  const title = 'Register';
+  const user = userDB[req.session.user_id];
+  const templateVars = { urls: urlDB, user, title };
+
+  if (isLoggedIn(req)) {
+    return res.redirect('/urls');
+  }
+
+  res.render('emptyfield', templateVars);
 });
 
 //Route for all of the urls in the database

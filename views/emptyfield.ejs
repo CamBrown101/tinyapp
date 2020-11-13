@@ -1,0 +1,17 @@
+<%- include('partials/_header') %>
+
+<main style="margin: 1em;">
+  <h3>Register a new user</h3>
+  <h4 class="error">Empty Password Or Email Field!</h4>
+  <form action="/register" method="POST">
+    <div class="form-group">
+      <label for="email">Email:</label>
+      <input class="form-control" type="email" name="email" style="width: 300px; margin: 1em">
+      <label for="password">Password:</label>
+      <input class="form-control" type="password" name="password" style="width: 300px; margin: 1em">
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </div>
+  </form>
+</main>
+
+<%- include('partials/_footer') %>
