@@ -24,7 +24,20 @@
   padding-top: 10px;
   padding-bottom: 10px;
 }
-
+/* Error message */
 .error {
   color: red;
+}
+/* Form styles */
+.form-style {
+  width: 300px; 
+  margin: 1em;
+}
+/* URLs index page */
+.margin-1 {
+  margin: 1em;
+}
+/* Urls show page */
+.show-input {
+  width: 250px;
 }
