@@ -59,6 +59,18 @@ app.post('/login', (req, res) => {
   res.status(403).send('Email or password was incorrect!');
 });
 
+//Route for Must login page
+app.get('/mustlogin', (req, res) => {
+  const title = 'Login';
+  const user = userDB[req.session.user_id];
+  const templateVars = { urls: urlDB, user, title };
+
+  if (isLoggedIn(req)) {
+    return res.redirect('/urls');
+  }
+  res.render('must_login', templateVars);
+});
+
 //Logout and remove cookie with user_id
 app.post('/logout', (req, res) => {
   req.session = null;
@@ -87,7 +99,7 @@ app.post('/register', (req, res) => {
 //Requst from the form submitting link to be shortends
 app.post('/urls', (req, res) => {
   if (!isLoggedIn(req)) {
-    return res.status(401).send('You must be logged in!');
+    return res.redirect('/mustlogin');
   }
 
   //Generate 6 char string for short URL
@@ -110,10 +122,10 @@ app.post('/urls/:shortURL', (req, res) => {
   const loggedInID = req.session.user_id;
 
   if (!isLoggedIn(req)) {
-    return res.status(401).send('You must be logged in!');
+    return res.redirect('/mustlogin');
   }
   if (!doesLoggedInOwnUrl(shortURL, loggedInID, urlDB)) {
-    return res.status(401).send('You must be logged in!');
+    return res.redirect('/mustlogin');
   }
   if (!longURL.startsWith('http')) {
     return res.redirect(`${shortURL}`);
@@ -129,10 +141,10 @@ app.post('/urls/:shortURL/delete', (req, res) => {
   const loggedInID = req.session.user_id;
 
   if (!isLoggedIn(req)) {
-    return res.status(401).send('You must be logged in!');
+    return res.redirect('/mustlogin');
   }
   if (!doesLoggedInOwnUrl(shortURL, loggedInID, urlDB)) {
-    return res.status(401).send('You must be logged in!');
+    return res.redirect('/mustlogin');
   }
 
   deleteUrl(shortURL, urlDB);
@@ -169,7 +181,7 @@ app.get('/register', (req, res) => {
 //Route for all of the urls in the database
 app.get('/urls', (req, res) => {
   if (!isLoggedIn(req)) {
-    return res.status(401).send('You must be logged in!');
+    return res.redirect('/mustlogin');
   }
 
   const title = 'Urls';
@@ -201,7 +213,7 @@ app.get('/urls/:shortURL', (req, res) => {
     return res.status(404).send('Short URL not found!');
   }
   if (!isLoggedIn(req)) {
-    return res.status(401).send('You must be logged in!');
+    return res.redirect('/mustlogin');
   }
   if (!doesLoggedInOwnUrl(shortURL, loggedInID, urlDB)) {
     res.status(401).send('That URL does not belong to you!');
@@ -214,7 +226,7 @@ app.get('/urls/:shortURL', (req, res) => {
   res.render('urls_show', templateVars);
 });
 
-//redirects /u/:shortURL to it's long version
+// /u/:shortURL to it's long version
 app.get('/u/:shortURL', (req, res) => {
   const shortURL = req.params.shortURL;
 
