@@ -3,10 +3,11 @@
 const getIdByEmail = (email, database) => {
   for (let id in database) {
     if (database[id].email === email) {
-      return id
+      return id;
     }
   }
 };
+
 //Generates random 6 char string
 const generateRandomString = () => {
   return Math.random().toString(36).slice(2, 8);
@@ -14,7 +15,7 @@ const generateRandomString = () => {
 
 //Deletes a URL
 const deleteUrl = (urlID, database) => {
-  delete database[urlID]
+  delete database[urlID];
 };
 
 //Looks up if email is already in the database returns a boolean
@@ -42,27 +43,37 @@ const getPasswordByEmail = (email, database) => {
     }
   }
 };
+
 //Get urls by ID returns an object of objects with the shortUrl as keys
 const getUrlById = (id, database) => {
   const urlsById = {};
   for (let shortURL in database) {
     if (database[shortURL].userID === id) {
-      urlsById[shortURL] = database[shortURL]
+      urlsById[shortURL] = database[shortURL];
     }
   }
   return urlsById;
 };
+
 //Check to see if a user id matches the id on a url
 const doesLoggedInOwnUrl = (shortURL, loggedInID, database) => {
   if (!loggedInID) {
     return false;
-  };
+  }
   for (let keys in database) {
     if (keys === shortURL) {
       if (database[keys].userID === loggedInID)
         return true;
     }
-  };
+  }
 };
 
-module.exports = { getIdByEmail, generateRandomString, deleteUrl, doesEmailExist, isLoggedIn, getPasswordByEmail, getUrlById, doesLoggedInOwnUrl };
+const doesShortUrlExist = (shortURL, database) => {
+  for (let url in database) {
+    if (shortURL === url) {
+      return true;
+    }
+  }
+};
+
+module.exports = { doesShortUrlExist, getIdByEmail, generateRandomString, deleteUrl, doesEmailExist, isLoggedIn, getPasswordByEmail, getUrlById, doesLoggedInOwnUrl };
