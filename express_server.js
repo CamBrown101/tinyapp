@@ -3,7 +3,17 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const bcrypt = require('bcrypt');
 const cookieSession = require('cookie-session');
-const { doesShortUrlExist, getIdByEmail, generateRandomString, deleteUrl, doesEmailExist, isLoggedIn, getPasswordByEmail, getUrlById, doesLoggedInOwnUrl } = require('./helpers');
+const {
+  doesShortUrlExist,
+  getIdByEmail,
+  generateRandomString,
+  deleteUrl,
+  doesEmailExist,
+  isLoggedIn,
+  getPasswordByEmail,
+  getUrlById,
+  doesLoggedInOwnUrl,
+} = require('./helpers');
 
 //Sets app as express
 const app = express();
@@ -19,10 +29,12 @@ app.set('view engine', 'ejs');
 app.use(express.static('public'));
 
 //Parses our cookies
-app.use(cookieSession({
-  name: 'session',
-  keys: ['TinyAppRules']
-}));
+app.use(
+  cookieSession({
+    name: 'session',
+    keys: ['TinyAppRules'],
+  })
+);
 
 //Adds body parser as middleware
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -30,17 +42,17 @@ app.use(bodyParser.urlencoded({ extended: true }));
 //Database objects
 //URL database
 const urlDB = {
-  i4BoGr: { longURL: "https://www.google.ca", userID: "1" },
-  i3BoGr: { longURL: "https://www.gfdoogle.ca", userID: "1" }
+  i4BoGr: { longURL: 'https://www.google.ca', userID: '1' },
+  i3BoGr: { longURL: 'https://www.gfdoogle.ca', userID: '1' },
 };
 
 //User database
 const userDB = {
-  "1": {
-    userID: "1",
-    email: "a@b.com",
-    password: bcrypt.hashSync("1", 10)
-  }
+  1: {
+    userID: '1',
+    email: 'a@b.com',
+    password: bcrypt.hashSync('1', 10),
+  },
 };
 
 //Post requests
@@ -73,7 +85,7 @@ app.post('/register', (req, res) => {
 
   //Check to see if the email or password fields are blank
   if (!email || !password) {
-    return res.redirect('/emptyField')
+    return res.redirect('/emptyField');
   }
   if (doesEmailExist(email, userDB)) {
     return res.redirect('/emailExists');
@@ -164,6 +176,9 @@ app.get('/loginError', (req, res) => {
   }
 
   res.render('login_error', templateVars);
+});
+app.get('/', (req, res) => {
+  res.redirect('/urls');
 });
 
 //Route for Must login page
