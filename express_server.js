@@ -178,7 +178,7 @@ app.get('/loginError', (req, res) => {
   res.render('login_error', templateVars);
 });
 app.get('/', (req, res) => {
-  res.redirect('/urls');
+  res.redirect('/login');
 });
 
 //Route for Must login page
